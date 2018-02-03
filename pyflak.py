@@ -1,20 +1,15 @@
-PARENTHESIS = 0
-SQUIGGLY = 1
-SQUARE = 2
-ANGLED = 3
-
 class Nilad:
     def __init__(self, string):
-        self.brack_type = ["()", "{}", "[]", "<>"].index(string)
+        self.brack_type = string
 
     def exec(self, program_state):
-        if self.brack_type == PARENTHESIS:
+        if self.brack_type == "()":
             return 1
-        if self.brack_type == SQUIGGLY:
+        if self.brack_type == "{}":
             return program_state.pop()
-        if self.brack_type == SQUARE:
+        if self.brack_type == "[]":
             return program_state.stack_height()
-        if self.brack_type == ANGLED:
+        if self.brack_type == "<>":
             return program_state.toggle()
 
     def is_nilad(self):
@@ -22,11 +17,11 @@ class Nilad:
 
 class Monad:
     def __init__(self, string, args):
-        self.brack_type = "({[<".find(string)
+        self.brack_type = string
         self.args = args
 
     def exec(self, program_state):
-        if self.brack_type == PARENTHESIS:
+        if self.brack_type == "(":
             value = 0
             for atom in self.args:
                 value += atom.exec(program_state)
@@ -34,7 +29,7 @@ class Monad:
 
             return value
 
-        if self.brack_type == SQUIGGLY:
+        if self.brack_type == "{":
             value = 0
             while program_state.peek():
                 for atom in self.args:
@@ -42,14 +37,14 @@ class Monad:
 
             return value
 
-        if self.brack_type == SQUARE:
+        if self.brack_type == "[":
             value = 0
             for atom in self.args:
                 value += atom.exec(program_state)
 
             return value * -1
 
-        if self.brack_type == ANGLED:
+        if self.brack_type == "<":
             for atom in self.args:
                 atom.exec(program_state)
             
